@@ -1,0 +1,454 @@
+var _user$project$Main$getPlayer = function (player) {
+	return _elm_lang$core$Native_Utils.eq(player, 0) ? ' ' : (_elm_lang$core$Native_Utils.eq(player, 1) ? 'X' : 'O');
+};
+var _user$project$Main$showWinner = function (model) {
+	return A2(
+		_elm_lang$html$Html$h1,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: (!_elm_lang$core$Native_Utils.eq(model.winner, 0)) ? _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'Winner = ',
+					_user$project$Main$getPlayer(model.winner))) : (model.draw ? _elm_lang$html$Html$text('DRAW!') : _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					model.turn ? 'Player 1' : 'Player 2',
+					'\'s Turn'))),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$updateCell = F3(
+	function (model, x, y) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (row) {
+				return A2(
+					_elm_lang$core$List$map,
+					function (cell) {
+						return (_elm_lang$core$Native_Utils.eq(cell.x, x) && (_elm_lang$core$Native_Utils.eq(cell.y, y) && _elm_lang$core$Native_Utils.eq(cell.player, 0))) ? _elm_lang$core$Native_Utils.update(
+							cell,
+							{player: 1}) : cell;
+					},
+					row);
+			},
+			model.board);
+	});
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {board: a, turn: b, winner: c, draw: d};
+	});
+var _user$project$Main$Cell = F3(
+	function (a, b, c) {
+		return {x: a, y: b, player: c};
+	});
+var _user$project$Main$initModel = {
+	board: {
+		ctor: '::',
+		_0: {
+			ctor: '::',
+			_0: A3(_user$project$Main$Cell, 0, 0, 1),
+			_1: {
+				ctor: '::',
+				_0: A3(_user$project$Main$Cell, 1, 0, 0),
+				_1: {
+					ctor: '::',
+					_0: A3(_user$project$Main$Cell, 2, 0, 1),
+					_1: {
+						ctor: '::',
+						_0: A3(_user$project$Main$Cell, 3, 0, 0),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Main$Cell, 4, 0, 1),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Main$Cell, 5, 0, 0),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Cell, 6, 0, 1),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 7, 0, 0),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '::',
+				_0: A3(_user$project$Main$Cell, 0, 1, 0),
+				_1: {
+					ctor: '::',
+					_0: A3(_user$project$Main$Cell, 1, 1, 1),
+					_1: {
+						ctor: '::',
+						_0: A3(_user$project$Main$Cell, 2, 1, 0),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Main$Cell, 3, 1, 1),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Main$Cell, 4, 1, 0),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Cell, 5, 1, 1),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 6, 1, 0),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Cell, 7, 1, 1),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '::',
+					_0: A3(_user$project$Main$Cell, 0, 2, 1),
+					_1: {
+						ctor: '::',
+						_0: A3(_user$project$Main$Cell, 1, 2, 0),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Main$Cell, 2, 2, 1),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Main$Cell, 3, 2, 0),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Cell, 4, 2, 1),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 5, 2, 0),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Cell, 6, 2, 1),
+											_1: {
+												ctor: '::',
+												_0: A3(_user$project$Main$Cell, 7, 2, 0),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '::',
+						_0: A3(_user$project$Main$Cell, 0, 3, 0),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Main$Cell, 1, 3, 0),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Main$Cell, 2, 3, 0),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Cell, 3, 3, 0),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 4, 3, 0),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Cell, 5, 3, 0),
+											_1: {
+												ctor: '::',
+												_0: A3(_user$project$Main$Cell, 6, 3, 0),
+												_1: {
+													ctor: '::',
+													_0: A3(_user$project$Main$Cell, 7, 3, 0),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '::',
+							_0: A3(_user$project$Main$Cell, 0, 4, 0),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Main$Cell, 1, 4, 0),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Cell, 2, 4, 0),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 3, 4, 0),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Cell, 4, 4, 0),
+											_1: {
+												ctor: '::',
+												_0: A3(_user$project$Main$Cell, 5, 4, 0),
+												_1: {
+													ctor: '::',
+													_0: A3(_user$project$Main$Cell, 6, 4, 0),
+													_1: {
+														ctor: '::',
+														_0: A3(_user$project$Main$Cell, 7, 4, 0),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '::',
+								_0: A3(_user$project$Main$Cell, 0, 5, 0),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Cell, 1, 5, 2),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 2, 5, 0),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Cell, 3, 5, 2),
+											_1: {
+												ctor: '::',
+												_0: A3(_user$project$Main$Cell, 4, 5, 0),
+												_1: {
+													ctor: '::',
+													_0: A3(_user$project$Main$Cell, 5, 5, 2),
+													_1: {
+														ctor: '::',
+														_0: A3(_user$project$Main$Cell, 6, 5, 0),
+														_1: {
+															ctor: '::',
+															_0: A3(_user$project$Main$Cell, 7, 5, 2),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Cell, 0, 6, 2),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 1, 6, 0),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Cell, 2, 6, 2),
+											_1: {
+												ctor: '::',
+												_0: A3(_user$project$Main$Cell, 3, 6, 0),
+												_1: {
+													ctor: '::',
+													_0: A3(_user$project$Main$Cell, 4, 6, 2),
+													_1: {
+														ctor: '::',
+														_0: A3(_user$project$Main$Cell, 5, 6, 0),
+														_1: {
+															ctor: '::',
+															_0: A3(_user$project$Main$Cell, 6, 6, 2),
+															_1: {
+																ctor: '::',
+																_0: A3(_user$project$Main$Cell, 7, 6, 0),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Cell, 0, 7, 0),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Cell, 1, 7, 2),
+											_1: {
+												ctor: '::',
+												_0: A3(_user$project$Main$Cell, 2, 7, 0),
+												_1: {
+													ctor: '::',
+													_0: A3(_user$project$Main$Cell, 3, 7, 2),
+													_1: {
+														ctor: '::',
+														_0: A3(_user$project$Main$Cell, 4, 7, 0),
+														_1: {
+															ctor: '::',
+															_0: A3(_user$project$Main$Cell, 5, 7, 2),
+															_1: {
+																ctor: '::',
+																_0: A3(_user$project$Main$Cell, 6, 7, 0),
+																_1: {
+																	ctor: '::',
+																	_0: A3(_user$project$Main$Cell, 7, 7, 2),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	turn: true,
+	winner: 0,
+	draw: false
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'Reset') {
+			return _user$project$Main$initModel;
+		} else {
+			var new_turn = !model.turn;
+			var new_board = (!_elm_lang$core$Native_Utils.eq(model.winner, 0)) ? A3(_user$project$Main$updateCell, model, _p0._0, _p0._1) : model.board;
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{board: new_board, turn: new_turn, winner: 0, draw: false});
+		}
+	});
+var _user$project$Main$Move = F2(
+	function (a, b) {
+		return {ctor: 'Move', _0: a, _1: b};
+	});
+var _user$project$Main$makeBoardCells = function (boardRow) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		A2(
+			_elm_lang$core$List$map,
+			function (cell) {
+				return A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('button'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								A2(_user$project$Main$Move, cell.x, cell.y)),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							_user$project$Main$getPlayer(cell.player)),
+						_1: {ctor: '[]'}
+					});
+			},
+			boardRow));
+};
+var _user$project$Main$makeBoard = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('board'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$ul,
+				{ctor: '[]'},
+				A2(
+					_elm_lang$core$List$map,
+					function (boardRow) {
+						return _user$project$Main$makeBoardCells(boardRow);
+					},
+					model.board)),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$Reset = {ctor: 'Reset'};
+var _user$project$Main$clearButton = A2(
+	_elm_lang$html$Html$button,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$type_('button'),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Reset),
+			_1: {ctor: '[]'}
+		}
+	},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Restart'),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Checkers'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$showWinner(model),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$makeBoard(model),
+					_1: {
+						ctor: '::',
+						_0: _user$project$Main$clearButton,
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
+	{model: _user$project$Main$initModel, view: _user$project$Main$view, update: _user$project$Main$update})();
