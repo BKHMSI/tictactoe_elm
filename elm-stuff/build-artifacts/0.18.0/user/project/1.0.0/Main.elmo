@@ -1,39 +1,228 @@
-var _user$project$Main$getPlayer = function (player) {
-	return _elm_lang$core$Native_Utils.eq(player, 0) ? ' ' : (_elm_lang$core$Native_Utils.eq(player, 1) ? 'X' : 'O');
+var _user$project$Main$display_info = A2(
+	_elm_lang$html$Html$h4,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Project for CSCE 3104: Concepts of Programming Languages'),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$get_player_str = function (player) {
+	return player ? 'Player 1' : 'Player 2';
 };
-var _user$project$Main$showWinner = function (model) {
+var _user$project$Main$display_winner = function (model) {
 	return A2(
 		_elm_lang$html$Html$h1,
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: (!_elm_lang$core$Native_Utils.eq(model.winner, 0)) ? _elm_lang$html$Html$text(
+			_0: model.winner ? _elm_lang$html$Html$text(
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					'Winner = ',
-					_user$project$Main$getPlayer(model.winner))) : (model.draw ? _elm_lang$html$Html$text('DRAW!') : _elm_lang$html$Html$text(
+					'Winner: ',
+					_user$project$Main$get_player_str(!model.turn))) : (model.draw ? _elm_lang$html$Html$text('DRAW!') : _elm_lang$html$Html$text(
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					model.turn ? 'Player 1' : 'Player 2',
+					_user$project$Main$get_player_str(model.turn),
 					'\'s Turn'))),
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$Main$updateCell = F3(
-	function (model, x, y) {
+var _user$project$Main$get_player = function (player) {
+	return player ? _elm_lang$core$Native_Utils.chr('X') : _elm_lang$core$Native_Utils.chr('O');
+};
+var _user$project$Main$check_draw = function (board) {
+	return !A2(
+		_elm_lang$core$List$member,
+		_elm_lang$core$Native_Utils.chr(' '),
+		A3(
+			_elm_lang$core$List$foldr,
+			_elm_lang$core$List$append,
+			{ctor: '[]'},
+			board));
+};
+var _user$project$Main$take_el = F2(
+	function (index, list) {
 		return A2(
-			_elm_lang$core$List$map,
-			function (row) {
-				return A2(
-					_elm_lang$core$List$map,
-					function (cell) {
-						return (_elm_lang$core$Native_Utils.eq(cell.x, x) && (_elm_lang$core$Native_Utils.eq(cell.y, y) && _elm_lang$core$Native_Utils.eq(cell.player, 0))) ? _elm_lang$core$Native_Utils.update(
-							cell,
-							{player: 1}) : cell;
-					},
-					row);
-			},
+			_elm_lang$core$List$take,
+			1,
+			A2(_elm_lang$core$List$drop, index, list));
+	});
+var _user$project$Main$is_equal = function (list) {
+	var _p0 = _elm_lang$core$List$head(list);
+	if (_p0.ctor === 'Just') {
+		if (_p0._0.valueOf() === ' ') {
+			return false;
+		} else {
+			return A3(
+				_elm_lang$core$List$foldr,
+				F2(
+					function (element, status) {
+						return status ? _elm_lang$core$Native_Utils.eq(element, _p0._0) : false;
+					}),
+				true,
+				list);
+		}
+	} else {
+		return false;
+	}
+};
+var _user$project$Main$check_diag = function (board) {
+	var d_2 = _elm_lang$core$List$concat(
+		A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (index, row) {
+					return A2(_user$project$Main$take_el, 2 - index, row);
+				}),
+			board));
+	var d_1 = _elm_lang$core$List$concat(
+		A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (index, row) {
+					return A2(_user$project$Main$take_el, index, row);
+				}),
+			board));
+	return _user$project$Main$is_equal(d_1) || _user$project$Main$is_equal(d_2);
+};
+var _user$project$Main$check_col = function (board) {
+	return _elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(
+			A2(
+				_elm_lang$core$List$filter,
+				function (status) {
+					return status;
+				},
+				A2(_elm_lang$core$List$map, _user$project$Main$is_equal, board))),
+		0) > 0;
+};
+var _user$project$Main$check_row = function (board) {
+	var rows = A2(
+		_elm_lang$core$List$indexedMap,
+		F2(
+			function (index, _p1) {
+				return _elm_lang$core$List$concat(
+					A2(
+						_elm_lang$core$List$map,
+						function (row) {
+							return A2(_user$project$Main$take_el, index, row);
+						},
+						board));
+			}),
+		A2(_elm_lang$core$List$range, 0, 2));
+	return _elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(
+			A2(
+				_elm_lang$core$List$filter,
+				function (status) {
+					return status;
+				},
+				A2(_elm_lang$core$List$map, _user$project$Main$is_equal, rows))),
+		0) > 0;
+};
+var _user$project$Main$check_winner = function (board) {
+	return _user$project$Main$check_row(board) || (_user$project$Main$check_col(board) || _user$project$Main$check_diag(board));
+};
+var _user$project$Main$update_cell = F3(
+	function (model, xx, yy) {
+		return A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (y, row) {
+					return A2(
+						_elm_lang$core$List$indexedMap,
+						F2(
+							function (x, cell) {
+								return (_elm_lang$core$Native_Utils.eq(x, xx) && (_elm_lang$core$Native_Utils.eq(y, yy) && _elm_lang$core$Native_Utils.eq(
+									cell,
+									_elm_lang$core$Native_Utils.chr(' ')))) ? _user$project$Main$get_player(model.turn) : cell;
+							}),
+						row);
+				}),
 			model.board);
+	});
+var _user$project$Main$init_model = {
+	ctor: '_Tuple2',
+	_0: {
+		board: {
+			ctor: '::',
+			_0: {
+				ctor: '::',
+				_0: _elm_lang$core$Native_Utils.chr(' '),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$core$Native_Utils.chr(' '),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$core$Native_Utils.chr(' '),
+						_1: {ctor: '[]'}
+					}
+				}
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '::',
+					_0: _elm_lang$core$Native_Utils.chr(' '),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$core$Native_Utils.chr(' '),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$core$Native_Utils.chr(' '),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '::',
+						_0: _elm_lang$core$Native_Utils.chr(' '),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$core$Native_Utils.chr(' '),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$core$Native_Utils.chr(' '),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		turn: true,
+		winner: false,
+		draw: false
+	},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		if (_p2.ctor === 'Reset') {
+			return _user$project$Main$init_model;
+		} else {
+			if (model.winner) {
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{ctor: '[]'});
+			} else {
+				var new_board = A3(_user$project$Main$update_cell, model, _p2._0, _p2._1);
+				var new_winner = _user$project$Main$check_winner(new_board);
+				var is_draw = _user$project$Main$check_draw(new_board);
+				var new_turn = _elm_lang$core$Native_Utils.eq(model.board, new_board) ? model.turn : (!model.turn);
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{board: new_board, turn: new_turn, winner: new_winner, draw: is_draw}),
+					{ctor: '[]'});
+			}
+		}
 	});
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
@@ -43,369 +232,113 @@ var _user$project$Main$Cell = F3(
 	function (a, b, c) {
 		return {x: a, y: b, player: c};
 	});
-var _user$project$Main$initModel = {
-	board: {
-		ctor: '::',
-		_0: {
-			ctor: '::',
-			_0: A3(_user$project$Main$Cell, 0, 0, 1),
-			_1: {
+var _user$project$Main$Move = F2(
+	function (a, b) {
+		return {ctor: 'Move', _0: a, _1: b};
+	});
+var _user$project$Main$make_board_cells = F2(
+	function (y, board_row) {
+		return A2(
+			_elm_lang$html$Html$li,
+			{
 				ctor: '::',
-				_0: A3(_user$project$Main$Cell, 1, 0, 0),
-				_1: {
-					ctor: '::',
-					_0: A3(_user$project$Main$Cell, 2, 0, 1),
-					_1: {
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
 						ctor: '::',
-						_0: A3(_user$project$Main$Cell, 3, 0, 0),
+						_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
 						_1: {
 							ctor: '::',
-							_0: A3(_user$project$Main$Cell, 4, 0, 1),
-							_1: {
-								ctor: '::',
-								_0: A3(_user$project$Main$Cell, 5, 0, 0),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$Main$Cell, 6, 0, 1),
-									_1: {
-										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 7, 0, 0),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
+							_0: {ctor: '_Tuple2', _0: 'list-style', _1: 'none'},
+							_1: {ctor: '[]'}
 						}
-					}
-				}
-			}
-		},
-		_1: {
-			ctor: '::',
-			_0: {
-				ctor: '::',
-				_0: A3(_user$project$Main$Cell, 0, 1, 0),
-				_1: {
-					ctor: '::',
-					_0: A3(_user$project$Main$Cell, 1, 1, 1),
-					_1: {
-						ctor: '::',
-						_0: A3(_user$project$Main$Cell, 2, 1, 0),
-						_1: {
-							ctor: '::',
-							_0: A3(_user$project$Main$Cell, 3, 1, 1),
-							_1: {
-								ctor: '::',
-								_0: A3(_user$project$Main$Cell, 4, 1, 0),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$Main$Cell, 5, 1, 1),
-									_1: {
-										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 6, 1, 0),
-										_1: {
-											ctor: '::',
-											_0: A3(_user$project$Main$Cell, 7, 1, 1),
-											_1: {ctor: '[]'}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+					}),
+				_1: {ctor: '[]'}
 			},
-			_1: {
-				ctor: '::',
-				_0: {
-					ctor: '::',
-					_0: A3(_user$project$Main$Cell, 0, 2, 1),
-					_1: {
-						ctor: '::',
-						_0: A3(_user$project$Main$Cell, 1, 2, 0),
-						_1: {
-							ctor: '::',
-							_0: A3(_user$project$Main$Cell, 2, 2, 1),
-							_1: {
+			A2(
+				_elm_lang$core$List$indexedMap,
+				F2(
+					function (x, cell) {
+						return A2(
+							_elm_lang$html$Html$div,
+							{
 								ctor: '::',
-								_0: A3(_user$project$Main$Cell, 3, 2, 0),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$Main$Cell, 4, 2, 1),
-									_1: {
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
 										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 5, 2, 0),
+										_0: {ctor: '_Tuple2', _0: 'width', _1: '100px'},
 										_1: {
 											ctor: '::',
-											_0: A3(_user$project$Main$Cell, 6, 2, 1),
+											_0: {ctor: '_Tuple2', _0: 'height', _1: '100px'},
 											_1: {
 												ctor: '::',
-												_0: A3(_user$project$Main$Cell, 7, 2, 0),
-												_1: {ctor: '[]'}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				_1: {
-					ctor: '::',
-					_0: {
-						ctor: '::',
-						_0: A3(_user$project$Main$Cell, 0, 3, 0),
-						_1: {
-							ctor: '::',
-							_0: A3(_user$project$Main$Cell, 1, 3, 0),
-							_1: {
-								ctor: '::',
-								_0: A3(_user$project$Main$Cell, 2, 3, 0),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$Main$Cell, 3, 3, 0),
-									_1: {
-										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 4, 3, 0),
-										_1: {
-											ctor: '::',
-											_0: A3(_user$project$Main$Cell, 5, 3, 0),
-											_1: {
-												ctor: '::',
-												_0: A3(_user$project$Main$Cell, 6, 3, 0),
+												_0: {ctor: '_Tuple2', _0: 'border-style', _1: 'solid'},
 												_1: {
 													ctor: '::',
-													_0: A3(_user$project$Main$Cell, 7, 3, 0),
-													_1: {ctor: '[]'}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					_1: {
-						ctor: '::',
-						_0: {
-							ctor: '::',
-							_0: A3(_user$project$Main$Cell, 0, 4, 0),
-							_1: {
-								ctor: '::',
-								_0: A3(_user$project$Main$Cell, 1, 4, 0),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$Main$Cell, 2, 4, 0),
-									_1: {
-										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 3, 4, 0),
-										_1: {
-											ctor: '::',
-											_0: A3(_user$project$Main$Cell, 4, 4, 0),
-											_1: {
-												ctor: '::',
-												_0: A3(_user$project$Main$Cell, 5, 4, 0),
-												_1: {
-													ctor: '::',
-													_0: A3(_user$project$Main$Cell, 6, 4, 0),
+													_0: {ctor: '_Tuple2', _0: 'background-color', _1: '#26e4b6'},
 													_1: {
 														ctor: '::',
-														_0: A3(_user$project$Main$Cell, 7, 4, 0),
-														_1: {ctor: '[]'}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						},
-						_1: {
-							ctor: '::',
-							_0: {
-								ctor: '::',
-								_0: A3(_user$project$Main$Cell, 0, 5, 0),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$Main$Cell, 1, 5, 2),
-									_1: {
-										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 2, 5, 0),
-										_1: {
-											ctor: '::',
-											_0: A3(_user$project$Main$Cell, 3, 5, 2),
-											_1: {
-												ctor: '::',
-												_0: A3(_user$project$Main$Cell, 4, 5, 0),
-												_1: {
-													ctor: '::',
-													_0: A3(_user$project$Main$Cell, 5, 5, 2),
-													_1: {
-														ctor: '::',
-														_0: A3(_user$project$Main$Cell, 6, 5, 0),
+														_0: {ctor: '_Tuple2', _0: 'color', _1: 'black'},
 														_1: {
 															ctor: '::',
-															_0: A3(_user$project$Main$Cell, 7, 5, 2),
+															_0: {ctor: '_Tuple2', _0: 'font-size', _1: '72px'},
 															_1: {ctor: '[]'}
 														}
 													}
 												}
 											}
 										}
-									}
-								}
-							},
-							_1: {
-								ctor: '::',
-								_0: {
-									ctor: '::',
-									_0: A3(_user$project$Main$Cell, 0, 6, 2),
-									_1: {
-										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 1, 6, 0),
-										_1: {
-											ctor: '::',
-											_0: A3(_user$project$Main$Cell, 2, 6, 2),
-											_1: {
-												ctor: '::',
-												_0: A3(_user$project$Main$Cell, 3, 6, 0),
-												_1: {
-													ctor: '::',
-													_0: A3(_user$project$Main$Cell, 4, 6, 2),
-													_1: {
-														ctor: '::',
-														_0: A3(_user$project$Main$Cell, 5, 6, 0),
-														_1: {
-															ctor: '::',
-															_0: A3(_user$project$Main$Cell, 6, 6, 2),
-															_1: {
-																ctor: '::',
-																_0: A3(_user$project$Main$Cell, 7, 6, 0),
-																_1: {ctor: '[]'}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								},
+									}),
 								_1: {
 									ctor: '::',
-									_0: {
-										ctor: '::',
-										_0: A3(_user$project$Main$Cell, 0, 7, 0),
-										_1: {
-											ctor: '::',
-											_0: A3(_user$project$Main$Cell, 1, 7, 2),
-											_1: {
-												ctor: '::',
-												_0: A3(_user$project$Main$Cell, 2, 7, 0),
-												_1: {
-													ctor: '::',
-													_0: A3(_user$project$Main$Cell, 3, 7, 2),
-													_1: {
-														ctor: '::',
-														_0: A3(_user$project$Main$Cell, 4, 7, 0),
-														_1: {
-															ctor: '::',
-															_0: A3(_user$project$Main$Cell, 5, 7, 2),
-															_1: {
-																ctor: '::',
-																_0: A3(_user$project$Main$Cell, 6, 7, 0),
-																_1: {
-																	ctor: '::',
-																	_0: A3(_user$project$Main$Cell, 7, 7, 2),
-																	_1: {ctor: '[]'}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									},
+									_0: _elm_lang$html$Html_Events$onClick(
+										A2(_user$project$Main$Move, x, y)),
 									_1: {ctor: '[]'}
 								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	turn: true,
-	winner: 0,
-	draw: false
-};
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		if (_p0.ctor === 'Reset') {
-			return _user$project$Main$initModel;
-		} else {
-			var new_turn = !model.turn;
-			var new_board = (!_elm_lang$core$Native_Utils.eq(model.winner, 0)) ? A3(_user$project$Main$updateCell, model, _p0._0, _p0._1) : model.board;
-			return _elm_lang$core$Native_Utils.update(
-				model,
-				{board: new_board, turn: new_turn, winner: 0, draw: false});
-		}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_elm_lang$core$String$fromChar(cell)),
+								_1: {ctor: '[]'}
+							});
+					}),
+				board_row));
 	});
-var _user$project$Main$Move = F2(
-	function (a, b) {
-		return {ctor: 'Move', _0: a, _1: b};
-	});
-var _user$project$Main$makeBoardCells = function (boardRow) {
-	return A2(
-		_elm_lang$html$Html$li,
-		{ctor: '[]'},
-		A2(
-			_elm_lang$core$List$map,
-			function (cell) {
-				return A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('button'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								A2(_user$project$Main$Move, cell.x, cell.y)),
-							_1: {ctor: '[]'}
-						}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							_user$project$Main$getPlayer(cell.player)),
-						_1: {ctor: '[]'}
-					});
-			},
-			boardRow));
-};
-var _user$project$Main$makeBoard = function (model) {
+var _user$project$Main$make_board = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('board'),
+			_0: _elm_lang$html$Html_Attributes$style(
+				{ctor: '[]'}),
 			_1: {ctor: '[]'}
 		},
 		{
 			ctor: '::',
 			_0: A2(
 				_elm_lang$html$Html$ul,
-				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'padding', _1: '0'},
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				},
 				A2(
-					_elm_lang$core$List$map,
-					function (boardRow) {
-						return _user$project$Main$makeBoardCells(boardRow);
-					},
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (y, board_row) {
+							return A2(_user$project$Main$make_board_cells, y, board_row);
+						}),
 					model.board)),
 			_1: {ctor: '[]'}
 		});
 };
 var _user$project$Main$Reset = {ctor: 'Reset'};
-var _user$project$Main$clearButton = A2(
+var _user$project$Main$reset_btn = A2(
 	_elm_lang$html$Html$button,
 	{
 		ctor: '::',
@@ -424,31 +357,88 @@ var _user$project$Main$clearButton = A2(
 var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: A2(
 				_elm_lang$html$Html$h1,
-				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Checkers'),
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '0'},
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('X / O using ELM'),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
 				ctor: '::',
-				_0: _user$project$Main$showWinner(model),
+				_0: _user$project$Main$display_info,
 				_1: {
 					ctor: '::',
-					_0: _user$project$Main$makeBoard(model),
+					_0: _user$project$Main$display_winner(model),
 					_1: {
 						ctor: '::',
-						_0: _user$project$Main$clearButton,
-						_1: {ctor: '[]'}
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'center'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'margin', _1: '0 auto'},
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _user$project$Main$make_board(model),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$reset_btn,
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			}
 		});
 };
-var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
-	{model: _user$project$Main$initModel, view: _user$project$Main$view, update: _user$project$Main$update})();
+var _user$project$Main$main = _elm_lang$html$Html$program(
+	{
+		init: _user$project$Main$init_model,
+		view: _user$project$Main$view,
+		update: _user$project$Main$update,
+		subscriptions: function (_p3) {
+			return _elm_lang$core$Platform_Sub$none;
+		}
+	})();

@@ -1,1 +1,1 @@
-# Checkers using ELM
+# TicTacToe using ELM
